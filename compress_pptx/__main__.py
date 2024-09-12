@@ -59,11 +59,18 @@ def main():
         default=CompressPptx.DEFAULT_CRF,
     )
     parser.add_argument(
-        "-r",
-        "--resize",
+        "-ir",
+        "--image-resolution",
         type=int,
-        help="Maximum dimension for video and image",
-        default=CompressPptx.DEFAULT_RESIZE,
+        help="Maximum dimension for image",
+        default=CompressPptx.DEFAULT_IMAGE_RES,
+    )
+    parser.add_argument(
+        "-vr",
+        "--video-resolution",
+        type=int,
+        help="Maximum dimension for video",
+        default=CompressPptx.DEFAULT_VIDEO_RES,
     )
     parser.add_argument(
         "-j", "--recompress-jpeg", action="store_true", help="Recompress jpeg images"
@@ -98,7 +105,8 @@ def main():
             size=size_bytes,
             quality=cli_args.quality,
             crf=cli_args.crf,
-            resize=cli_args.resize,
+            image_res=cli_args.image_resolution,
+            video_res=cli_args.video_resolution,
             transparency=cli_args.transparency,
             skip_transparent_images=cli_args.skip_transparent_images,
             verbose=cli_args.verbose,

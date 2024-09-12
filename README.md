@@ -70,7 +70,8 @@ options:
   -q QUALITY, --quality QUALITY
                         JPEG output quality (0-100) (default: 85)
   -crf                  Video Compression Level 0-51 where 0 is no compression Defaults to 30
-  -r                    Max dimension (width or height) for video and images. Defaults to 1280
+  -ir                   Max dimension (width or height) for images. Defaults to 1920
+  -vr                   Max dimension (width or height) for video. Defaults to 1280
   -t TRANSPARENCY, --transparency TRANSPARENCY
                         Replace transparency with color (default: white)
   -k, --skip-transparent-images
@@ -88,10 +89,10 @@ options:
   --num-cpus NUM_CPUS   Number of CPUs to use (default: all available CPUs)
 ```
 
-## Example
-Compress all images over 512k and keep videos and images to 1280px, ignore transparent images
+## Examples
+Compress all (non-transparent) images and video over 512k, keep images under 1920px, 95 quality, keep videos under 1280, 30 quality
 ```
-compress-pptx -v -m -j -f -k -r=1280 -crf=30 -s=512k pptx/input_file.pptx 
+compress-pptx -m -j -k -s=512k -ir=1920 -q=95 -vr=1280 -crf=30 pptx/input_file.pptx 
 ```
 
 ## Bash Version

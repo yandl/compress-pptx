@@ -24,7 +24,8 @@ class FileObj(TypedDict):
     output_size: Optional[int]
     quality: int
     crf: int
-    resize: int
+    image_res: int
+    video_res: int
     transparency: str
     verbose: bool
 
@@ -36,7 +37,7 @@ def _compress_file(file: FileObj):
             "magick",
             "convert",
             "-resize",
-            str(file["resize"]) + "x" + str(file["resize"]) + ">",
+            str(file["image_res"]) + "x" + str(file["image_res"]) + ">",
             "-quality",
             str(file["quality"]),
             "-background",
@@ -50,7 +51,7 @@ def _compress_file(file: FileObj):
         ]
     else:
         # video, use ffmpeg
-        vf = "scale='if(gte(iw,ih),min(" + str(file["resize"]) + ",iw),-2):if(lt(iw,ih),min(" + str(file["resize"]) + ",ih),-2)'"
+        vf = "scale='if(gte(iw,ih),min(" + str(file["video_res"]) + ",iw),-2):if(lt(iw,ih),min(" + str(file["video_res"]) + ",ih),-2)'"
         cmd = ["ffmpeg", "-i", file["input"], "-crf", str(file["crf"]), "-vf", vf, file["output"]]
     run_command(cmd, verbose=file["verbose"])
 
@@ -72,7 +73,8 @@ class CompressPptx:
     DEFAULT_SIZE = "1MiB"
     DEFAULT_TRANSPARENCY = "white"
     DEFAULT_CRF = 30
-    DEFAULT_RESIZE = 1280
+    DEFAULT_IMAGE_RES = 1920
+    DEFAULT_VIDEO_RES = 1280
 
     def __init__(
         self,
@@ -82,7 +84,8 @@ class CompressPptx:
         quality=DEFAULT_QUALITY,
         transparency=DEFAULT_TRANSPARENCY,
         crf=DEFAULT_CRF,
-        resize=DEFAULT_RESIZE,
+        image_res=DEFAULT_IMAGE_RES,
+        video_res=DEFAULT_VIDEO_RES,
         skip_transparent_images=False,
         verbose=False,
         force=False,
@@ -101,7 +104,8 @@ class CompressPptx:
             quality (int, optional): JPEG quality to use. Defaults to 85.
             transparency (str, optional): Color to replace transparency with. Defaults to "white".
             crf (str, optional): Video Compression Level 0-51 where 0 is no compression Defaults to 30
-            resize (int, optional): Max dimension (width or height) for video and images. Defaults to 1280
+            ir (int, optional): Max dimension (width or height) for images. Defaults to 1920
+            vr (int, optional): Max dimension (width or height) for video. Defaults to 1280
             skip_transparent_images (bool, optional): Skip converting transparent images. Defaults to False.
             verbose (bool, optional): Show additional info. Defaults to False.
             force (bool, optional): Force overwriting output file. Defaults to False.
@@ -116,7 +120,8 @@ class CompressPptx:
         self.quality = int(quality)
         self.transparency = str(transparency)
         self.crf = int(crf)
-        self.resize = int(resize)
+        self.image_res = int(image_res)
+        self.video_res = int(video_res)
         self.skip_transparent_images = bool(skip_transparent_images)
         self.verbose = bool(verbose)
         self.force = bool(force)
@@ -267,7 +272,8 @@ class CompressPptx:
                 "output_size": None,
                 "quality": self.quality,
                 "crf": self.crf,
-                "resize": self.resize,
+                "image_res": self.image_res,
+                "video_res": self.video_res,
                 "transparency": self.transparency,
                 "verbose": self.verbose,
             }
