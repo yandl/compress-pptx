@@ -137,8 +137,8 @@ class CompressPptx:
 
         self.video_extensions = [".mov", ".avi", ".mp4"]
         self.converted_video_extensions = ".mp4"
-        self.audio_extensions = [".mp3", ".wav"]
-        self.converted_audio_extensions = ".mp3"
+        # self.audio_extensions = [".mp3", ".wav"]
+        # self.converted_audio_extensions = ".mp3"
 
         self.file_list: List[FileObj] = []
 
@@ -232,8 +232,8 @@ class CompressPptx:
                     is_image = False
                     if self._check_endswith(file, self.video_extensions):
                         output_extension = self.converted_video_extensions
-                    elif self._check_endswith(file, self.audio_extensions):
-                        output_extension = self.converted_audio_extensions
+                    # elif self._check_endswith(file, self.audio_extensions):
+                    #     output_extension = self.converted_audio_extensions
                     else:
                         continue  ## file is not a media file
                 else:
