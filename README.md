@@ -69,6 +69,8 @@ options:
                         suffixes k/M/G or KiB/MiB/GiB (default: 1MiB)
   -q QUALITY, --quality QUALITY
                         JPEG output quality (0-100) (default: 85)
+  -crf                  Video Compression Level 0-51 where 0 is no compression Defaults to 30
+  -r                    Max dimension (width or height) for video and images. Defaults to 1280
   -t TRANSPARENCY, --transparency TRANSPARENCY
                         Replace transparency with color (default: white)
   -k, --skip-transparent-images
@@ -84,6 +86,12 @@ options:
                         Use LibreOffice to compress EMF files (only way to
                         compress EMF files under Linux) (default: False)
   --num-cpus NUM_CPUS   Number of CPUs to use (default: all available CPUs)
+```
+
+## Example
+Compress all images over 512k and keep videos and images to 1280px, ignore transparent images
+```
+compress-pptx -v -m -j -f -k -r=1280 -crf=30 -s=512k pptx/input_file.pptx 
 ```
 
 ## Bash Version

@@ -52,6 +52,20 @@ def main():
         help="Compress other media types such as audio and video (requires ffmpeg)",
     )
     parser.add_argument(
+        "-crf",
+        "--crf",
+        type=int,
+        help="Video Compression Level 0-51 where 0 is no compression",
+        default=CompressPptx.DEFAULT_CRF,
+    )
+    parser.add_argument(
+        "-r",
+        "--resize",
+        type=int,
+        help="Maximum dimension for video and image",
+        default=CompressPptx.DEFAULT_RESIZE,
+    )
+    parser.add_argument(
         "-j", "--recompress-jpeg", action="store_true", help="Recompress jpeg images"
     )
     parser.add_argument(
@@ -83,6 +97,8 @@ def main():
             output_file=output,
             size=size_bytes,
             quality=cli_args.quality,
+            crf=cli_args.crf,
+            resize=cli_args.resize,
             transparency=cli_args.transparency,
             skip_transparent_images=cli_args.skip_transparent_images,
             verbose=cli_args.verbose,

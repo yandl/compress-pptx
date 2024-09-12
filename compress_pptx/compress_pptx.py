@@ -23,6 +23,8 @@ class FileObj(TypedDict):
     input_size: int
     output_size: Optional[int]
     quality: int
+    crf: int
+    resize: int
     transparency: str
     verbose: bool
 
@@ -33,6 +35,8 @@ def _compress_file(file: FileObj):
         cmd = [
             "magick",
             "convert",
+            "-resize",
+            str(file["resize"]) + "x" + str(file["resize"]) + ">",
             "-quality",
             str(file["quality"]),
             "-background",
@@ -46,7 +50,8 @@ def _compress_file(file: FileObj):
         ]
     else:
         # video, use ffmpeg
-        cmd = ["ffmpeg", "-i", file["input"], file["output"]]
+        vf = "scale='if(gte(iw,ih),min(" + str(file["resize"]) + ",iw),-2):if(lt(iw,ih),min(" + str(file["resize"]) + ",ih),-2)'"
+        cmd = ["ffmpeg", "-i", file["input"], "-crf", str(file["crf"]), "-vf", vf, file["output"]]
     run_command(cmd, verbose=file["verbose"])
 
 
@@ -66,6 +71,8 @@ class CompressPptx:
     DEFAULT_QUALITY = 85
     DEFAULT_SIZE = "1MiB"
     DEFAULT_TRANSPARENCY = "white"
+    DEFAULT_CRF = 30
+    DEFAULT_RESIZE = 1280
 
     def __init__(
         self,
@@ -74,6 +81,8 @@ class CompressPptx:
         size=convert_size_to_bytes(DEFAULT_SIZE),
         quality=DEFAULT_QUALITY,
         transparency=DEFAULT_TRANSPARENCY,
+        crf=DEFAULT_CRF,
+        resize=DEFAULT_RESIZE,
         skip_transparent_images=False,
         verbose=False,
         force=False,
@@ -91,6 +100,8 @@ class CompressPptx:
             size (int, optional): Minimum size of images to compress. Defaults to 1MiB.
             quality (int, optional): JPEG quality to use. Defaults to 85.
             transparency (str, optional): Color to replace transparency with. Defaults to "white".
+            crf (str, optional): Video Compression Level 0-51 where 0 is no compression Defaults to 30
+            resize (int, optional): Max dimension (width or height) for video and images. Defaults to 1280
             skip_transparent_images (bool, optional): Skip converting transparent images. Defaults to False.
             verbose (bool, optional): Show additional info. Defaults to False.
             force (bool, optional): Force overwriting output file. Defaults to False.
@@ -104,6 +115,8 @@ class CompressPptx:
         self.size = int(size)
         self.quality = int(quality)
         self.transparency = str(transparency)
+        self.crf = int(crf)
+        self.resize = int(resize)
         self.skip_transparent_images = bool(skip_transparent_images)
         self.verbose = bool(verbose)
         self.force = bool(force)
@@ -253,6 +266,8 @@ class CompressPptx:
                 "input_size": fsize,
                 "output_size": None,
                 "quality": self.quality,
+                "crf": self.crf,
+                "resize": self.resize,
                 "transparency": self.transparency,
                 "verbose": self.verbose,
             }
