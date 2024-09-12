@@ -12,7 +12,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "./.devcontainer/postCreate.sh",
+	"postCreateCommand": "chmod +x .devcontainer/postCreate.sh && ./.devcontainer/postCreate.sh",
 	// [
 	// 	"apt update",
 	// 	"apt install imagemagick",
