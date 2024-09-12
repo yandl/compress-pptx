@@ -2,6 +2,6 @@
 #apt update
 #apt install imagemagick
 export PATH="$HOME/.local/bin:$PATH"
-apk add imagemagick ffmpeg optipng git
+apk add imagemagick ffmpeg optipng tiff git
 pip3 install -e .
 compress-pptx -h
