@@ -32,23 +32,43 @@ class FileObj(TypedDict):
 
 def _compress_file(file: FileObj):
     if file["is_image"]:
+        if file["is_png"]:
+            precmd = [
+                "magick",
+                "convert",
+                "-resize",
+                str(file["image_res"]) + "x" + str(file["image_res"]) + ">",
+                file["input"] + "[0]",  # add [0] to use only the first page of TIFFs
+                file["output"],
+            ]
+            run_command(precmd, verbose=file["verbose"])
+            cmd = [
+                "optipng",
+                "-v",
+                "-clobber",
+                "-strip all",
+                file["output"],
+                "-out",
+                file["output"]
+            ]
+        else:
         # image, use convert (imagemagick)
-        cmd = [
-            "magick",
-            "convert",
-            "-resize",
-            str(file["image_res"]) + "x" + str(file["image_res"]) + ">",
-            "-quality",
-            str(file["quality"]),
-            "-background",
-            "white",
-            "-alpha",
-            "remove",
-            "-alpha",
-            "off",
-            file["input"] + "[0]",  # add [0] to use only the first page of TIFFs
-            file["output"],
-        ]
+            cmd = [
+                "magick",
+                "convert",
+                "-resize",
+                str(file["image_res"]) + "x" + str(file["image_res"]) + ">",
+                "-quality",
+                str(file["quality"]),
+                "-background",
+                "white",
+                "-alpha",
+                "remove",
+                "-alpha",
+                "off",
+                file["input"] + "[0]",  # add [0] to use only the first page of TIFFs
+                file["output"],
+            ]
     else:
         # video, use ffmpeg
         vf = "scale='if(gte(iw,ih),min(" + str(file["video_res"]) + ",iw),-2):if(lt(iw,ih),min(" + str(file["video_res"]) + ",ih),-2)'"
@@ -130,7 +150,7 @@ class CompressPptx:
         self.num_cpus = num_cpus
 
         # file extensions and conversions
-        self.image_extensions = [".png", ".emf", ".tiff"]
+        self.image_extensions = [".png", ".tiff"] #".emf",
         if recompress_jpeg:
             self.image_extensions.extend([".jpg", ".jpeg"])
         self.converted_image_extension = ".jpg"
@@ -221,7 +241,11 @@ class CompressPptx:
             os.path.join(self.temp_dir, "ppt", "media", "*"), recursive=True
         ):
             is_image = True
-            output_extension = self.converted_image_extension
+            is_png = Path(file).suffix == ".png"
+            if is_png:
+                output_extension = ".png"
+            else:    
+                output_extension = self.converted_image_extension
             # skip unaffected extensions
             if not (
                 self._check_endswith(file, self.image_extensions)
@@ -263,6 +287,7 @@ class CompressPptx:
 
             file_obj: FileObj = {
                 "is_image": is_image,
+                "is_png": is_png,
                 "input": file,
                 "output": (
                     Path(file).parent

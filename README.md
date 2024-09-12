@@ -90,9 +90,9 @@ options:
 ```
 
 ## Examples
-Compress all (non-transparent) images and video over 512k, keep images under 1920px, 95 quality, keep videos under 1280, 30 quality
+Compress all images and video over 512k, keep images under 1920px, 95 quality, keep videos under 1280, 30 quality
 ```
-compress-pptx -m -j -k -s=512k -ir=1920 -q=95 -vr=1280 -crf=30 pptx/input_file.pptx 
+compress-pptx -m -j -s=512k -ir=1920 -q=95 -vr=1280 -crf=30 pptx/input_file.pptx 
 ```
 
 ## Bash Version
