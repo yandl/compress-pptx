@@ -29,6 +29,8 @@ ENV/
 
 ./cache
 
+/pptx/*
 test/test-compressed.pptx
 
 .vscode
+.DS_Store
